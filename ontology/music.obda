@@ -1,0 +1,49 @@
+[PrefixDeclaration]
+:		http://example.org/music#
+owl:		http://www.w3.org/2002/07/owl#
+rdf:		http://www.w3.org/1999/02/22-rdf-syntax-ns#
+xml:		http://www.w3.org/XML/1998/namespace
+xsd:		http://www.w3.org/2001/XMLSchema#
+obda:		https://w3id.org/obda/vocabulary#
+rdfs:		http://www.w3.org/2000/01/rdf-schema#
+
+[MappingDeclaration] @collection [[
+mappingId	MAPID-673db556f8e64a089637b6c22a1f5cd1
+target		:creator/{id} a :IndividualArtist ; :name {name}^^xsd:string . 
+source		SELECT c.id, MAX(c.name) as name
+			FROM song.music_creator c
+			JOIN song.person p ON c.id = p.creator_id
+			GROUP BY c.id HAVING COUNT(p.creator_id) = 1
+
+mappingId	MAPID-1496ddc8ee1f43b6934962f971e27adf
+target		:person/{id} a :Person ; :name {name} ; :birthCity {birth_city} . 
+source		SELECT id, name, birth_city FROM song.person
+
+mappingId	MAPID-d1ddbd95f40845769031609fbb1df656
+target		:person/{id} :isMemberOf :creator/{creator_id} . 
+source		SELECT id, creator_id FROM song.person WHERE creator_id IS NOT NULL
+
+mappingId	MAPID-86936ab029af4d208d70b515cb7d07a2
+target		:genre/{id} a :Genre ; :name {name} . 
+source		SELECT id, name FROM song.music_genre
+
+mappingId	MAPID-4b9d53ad076c48e1ba8ab1eb912beab8
+target		:song/{id} a :Song ; :name {name} ; :isCreatedBy :creator/{creator_id} ; :hasGenre :genre/{genre_id} . 
+source		SELECT id, name, creator_id, genre_id FROM song.song
+
+mappingId	MAPID-8a153bd5d4f64a84b3abe72a3d4e80f3
+target		:venue/{id} a :Venue ; :name {name} ; :city {city} . 
+source		SELECT id, name, city FROM event.venue
+
+mappingId	MAPID-dde42691c10f467abe37fb0f093e2966
+target		:perf/{perf_id} a :Performance ; :year {year} ; :performedAt :venue/{venue_id} . :creator/{creator_id} :hasPerformance :perf/{perf_id} . 
+source		SELECT p.id as perf_id, p.year, p.venue_id, p.creator_id FROM event.performance p
+
+mappingId	MAPID-918cbd452be340cdbcf1fea199ba44d7
+target		:creator/{id} a :Band ; :name {name}^^xsd:string . 
+source		SELECT c.id, MAX(c.name) as name
+			FROM song.music_creator c
+			JOIN song.person p ON c.id = p.creator_id
+			GROUP BY c.id HAVING COUNT(p.creator_id) > 1
+]]
+
