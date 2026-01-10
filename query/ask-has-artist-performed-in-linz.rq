@@ -1,0 +1,9 @@
+PREFIX : <http://example.org/music#>
+
+ASK {
+  ?venue :city "Linz" ;
+         a :Venue .
+  ?perf :performedAt ?venue .
+  ?creator :hasPerformance ?perf .
+  ?person :isMemberOf ?creator .
+}

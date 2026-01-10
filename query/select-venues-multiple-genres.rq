@@ -1,0 +1,19 @@
+PREFIX : <http://example.org/music#>
+
+SELECT ?city ?venueName (GROUP_CONCAT(DISTINCT ?genreName; separator=", ") AS ?genres)
+WHERE {
+  ?venue a :Venue ;
+         :city ?city ;
+         :name ?venueName .
+
+  ?perf :performedAt ?venue .
+  ?creator :hasPerformance ?perf .
+
+  ?song :isCreatedBy ?creator ;
+        :hasGenre ?genre .
+
+  ?genre :name ?genreName .
+}
+GROUP BY ?city ?venueName
+HAVING (COUNT(DISTINCT ?genre) > 1)
+ORDER BY ?city ?venueName

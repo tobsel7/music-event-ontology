@@ -1,0 +1,12 @@
+PREFIX : <http://example.org/music#>
+
+SELECT ?songName ?artistName ?birthCity
+WHERE {
+  ?song a :Song ;
+        :name ?songName ;
+        :isCreatedBy ?artist .
+  ?artist a :IndividualArtist .
+  ?person :isMemberOf ?artist ;
+          :name ?artistName ;
+          :birthCity ?birthCity .
+}

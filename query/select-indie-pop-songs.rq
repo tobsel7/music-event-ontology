@@ -1,0 +1,12 @@
+PREFIX : <http://example.org/music#>
+
+SELECT ?songName ?artistName
+WHERE {
+  ?genre a :Genre ;
+         :name "Indie Pop" .
+  ?song a :Song ;
+        :name ?songName ;
+        :isCreatedBy ?creator ;
+        :hasGenre ?genre .
+    ?creator :name ?artistName .
+}
